@@ -156,6 +156,12 @@ void setup() {
   }
   count.close();
   filename = String(fileCount);
+  File output = SD.open(filename,FILE_WRITE);
+  if (output)
+  {
+    output.println("UTC,fixType,lat,lon,height,hMSL,hAcc,vAcc,VelN,VelE,VelD,gSpeed,sAcc,PDOP,numSV,DGPS");
+    output.close();
+  }
  // Serial.println(filename);
 }
 
@@ -164,46 +170,7 @@ void writefile()
   File output = SD.open(filename,FILE_WRITE);
   if (output)
   {
-    //lat,lon,ele,time
-    output.print(pvt.lat/10000000);output.print(".");
-    long temp = 1000000;
-    if (pvt.lat<0)
-      pvt.lat = -pvt.lat;
-    pvt.lat = pvt.lat % 10000000;
-    while ((pvt.lat / temp == 0)&&(temp>1))
-    {
-      output.print("0");
-      temp /= 10;
-    }
-    output.print(pvt.lat);
-    output.print(",");
-
-    output.print(pvt.lon / 10000000);output.print(".");
-    temp = 1000000;
-    if (pvt.lon<0)
-      pvt.lon = -pvt.lon;
-    pvt.lon = pvt.lon % 10000000;
-    while ((pvt.lon / temp == 0)&&(temp>1))
-    {
-      output.print("0");
-      temp /= 10;
-    }
-    output.print(pvt.lon);
-    output.print(",");
-
-    output.print(pvt.height / 1000);output.print(".");
-    temp = 100;
-    if (pvt.height<0)
-      pvt.height = -pvt.height;
-    pvt.height = pvt.height % 1000;
-    while ((pvt.height / temp == 0)&&(temp>1))
-    {
-      output.print("0");
-      temp /= 10;
-    }
-    output.print(pvt.height);
-    output.print(",");
-
+    //UTC
     output.print(pvt.year);output.print("-");
     if (pvt.month<10)
       output.print(0);  
@@ -222,6 +189,106 @@ void writefile()
     output.print(pvt.sec);
     output.print("Z,");
 
+    //fixType
+    output.print(pvt.fixType);
+    output.print(",");
+
+    //lat
+    output.print(pvt.lat/10000000);output.print(".");
+    long temp = 1000000;
+    if (pvt.lat<0)
+      pvt.lat = -pvt.lat;
+    pvt.lat = pvt.lat % 10000000;
+    while ((pvt.lat / temp == 0)&&(temp>1))
+    {
+      output.print("0");
+      temp /= 10;
+    }
+    output.print(pvt.lat);
+    output.print(",");
+    //lon
+    output.print(pvt.lon / 10000000);output.print(".");
+    temp = 1000000;
+    if (pvt.lon<0)
+      pvt.lon = -pvt.lon;
+    pvt.lon = pvt.lon % 10000000;
+    while ((pvt.lon / temp == 0)&&(temp>1))
+    {
+      output.print("0");
+      temp /= 10;
+    }
+    output.print(pvt.lon);
+    output.print(",");
+    //height
+    output.print(pvt.height / 1000);output.print(".");
+    temp = 100;
+    if (pvt.height<0)
+      pvt.height = -pvt.height;
+    pvt.height = pvt.height % 1000;
+    while ((pvt.height / temp == 0)&&(temp>1))
+    {
+      output.print("0");
+      temp /= 10;
+    }
+    output.print(pvt.height);
+    output.print(",");
+    //hMSL
+    output.print(pvt.hMSL / 1000);output.print(".");
+    temp = 100;
+    if (pvt.hMSL<0)
+      pvt.hMSL = -pvt.hMSL;
+    pvt.hMSL = pvt.hMSL % 1000;
+    while ((pvt.hMSL / temp == 0)&&(temp>1))
+    {
+      output.print("0");
+      temp /= 10;
+    }
+    output.print(pvt.hMSL);
+    output.print(",");
+
+    //hAcc
+    output.print(pvt.hAcc / 1000);output.print(".");
+    if (pvt.hAcc % 1000 < 100)
+      output.print("0");
+    if (pvt.hAcc % 1000 < 10)
+      output.print("0");
+    output.print(pvt.hAcc % 1000);
+    output.print(",");
+    //vAcc
+    output.print(pvt.vAcc / 1000);output.print(".");
+    if (pvt.vAcc % 1000 < 100)
+      output.print("0");
+    if (pvt.vAcc % 1000 < 10)
+      output.print("0");
+    output.print(pvt.vAcc % 1000);
+    output.print(",");
+
+    //VelN
+    output.print(pvt.velN / 1000);output.print(".");
+    if (pvt.velN % 1000 < 100)
+      output.print("0");
+    if (pvt.velN % 1000 < 10)
+      output.print("0");
+    output.print(pvt.velN % 1000);
+    output.print(",");
+    //VelE
+    output.print(pvt.velE / 1000);output.print(".");
+    if (pvt.velE % 1000 < 100)
+      output.print("0");
+    if (pvt.velE % 1000 < 10)
+      output.print("0");
+    output.print(pvt.velE % 1000);
+    output.print(",");
+    //VelD
+    output.print(pvt.velD / 1000);output.print(".");
+    if (pvt.velD % 1000 < 100)
+      output.print("0");
+    if (pvt.velD % 1000 < 10)
+      output.print("0");
+    output.print(pvt.velD % 1000);
+    output.print(",");
+
+    //gSpeed
     output.print(pvt.gSpeed / 1000);
     output.print(".");
     if (pvt.gSpeed % 1000 < 100)
@@ -230,8 +297,32 @@ void writefile()
       output.print("0");
     output.print(pvt.gSpeed % 1000);
     output.print(",");
+    
+    //sAcc
+    output.print(pvt.sAcc / 1000);
+    output.print(".");
+    if (pvt.sAcc % 1000 < 100)
+      output.print("0");
+    if (pvt.sAcc % 1000 < 10)
+      output.print("0");
+    output.print(pvt.sAcc % 1000);
+    output.print(",");
+
+    //PDOP
+    output.print(pvt.pDop / 100);
+    output.print(".");
+    if (pvt.pDop % 100 < 10)
+      output.print("0");
+    output.print(pvt.pDop % 100);
+    output.print(",");
+
 
     output.print(pvt.numSV);
+    output.print(",");
+    if ((byte)pvt.flag & 2)
+      output.print("+");
+    else
+      output.print("-");
     
     output.println();
     //linecounter++;
@@ -250,12 +341,4 @@ void loop() {
   if (processGPS())
     writefile();
 }
-
-
-
-
-
-
-
-
 
